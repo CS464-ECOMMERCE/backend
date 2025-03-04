@@ -36,6 +36,7 @@ func InitRoutes() {
 	// process := controllers.NewProcessController(configs.Client)
 	// attempt := controllers.NewAttemptController(configs.Client)
 
+	health := controllers.NewHealthController()
 	item := controllers.NewItemController()
 	router := gin.Default()
 
@@ -49,13 +50,16 @@ func InitRoutes() {
 	router.Use(cors.New(config))
 
 	v1 := router.Group("/api/v1")
+
+	v1.GET("/health", health.HealthCheck)
+
 	itemRoute := v1.Group("/item")
 	itemRoute.POST("", item.CreateItem)
 	itemRoute.GET("/:id", item.GetItem)
 	itemRoute.PUT("", item.UpdateItem)
 	itemRoute.DELETE("/:id", item.DeleteItem)
 	// // Swagger
-	// router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler)) 
+	// router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Run(":" + configs.PORT)
 }
