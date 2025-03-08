@@ -2,4 +2,5 @@
 
 ```
 make run
+make stop
 ```

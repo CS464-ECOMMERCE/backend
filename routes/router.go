@@ -3,9 +3,11 @@ package routes
 import (
 	"backend/configs"
 	"backend/controllers"
+	"backend/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	// swaggerFiles "github.com/swaggo/files"     // swagger embed files
 	// ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
@@ -42,6 +44,11 @@ func InitRoutes() {
 
 	// // recover from panics and respond with internal server error
 	router.Use(gin.Recovery())
+
+	// add prometheus
+	middleware.PrometheusInit()
+	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	router.Use(middleware.TrackMetrics())
 
 	// enabling cors
 	config := cors.DefaultConfig()

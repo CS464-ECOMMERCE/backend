@@ -2,6 +2,12 @@
 run:
 	docker compose up -d
 
+run-build:
+	docker compose up --build -d
+
+stop:
+	docker compose down
+
 # linting
 lint:
 	golangci-lint run --enable-all
