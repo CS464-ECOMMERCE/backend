@@ -40,6 +40,7 @@ func InitRoutes() {
 
 	health := controllers.NewHealthController()
 	item := controllers.NewItemController()
+	product := controllers.NewProductController()
 	router := gin.Default()
 
 	// // recover from panics and respond with internal server error
@@ -65,6 +66,10 @@ func InitRoutes() {
 	itemRoute.GET("/:id", item.GetItem)
 	itemRoute.PUT("", item.UpdateItem)
 	itemRoute.DELETE("/:id", item.DeleteItem)
+
+	productRoute := v1.Group("/product")
+	productRoute.GET("", product.GetProduct)
+	productRoute.POST("", product.CreateProduct)
 	// // Swagger
 	// router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

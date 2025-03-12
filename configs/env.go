@@ -21,11 +21,16 @@ var (
 	POSTGRESQL_CONN_STRING_SLAVE  string
 	POSTGRESQL_MAX_IDLE_CONNS     int
 	POSTGRESQL_MAX_OPEN_CONNS     int
+	PRODUCT_SERVICE_ADDR          string
 )
 
 func InitEnv() {
 	// loads environment variables
-	err := godotenv.Load("/app/secrets/.env")
+	envPath := "/app/secrets/.env"
+	if os.Getenv("ENV") == "dev" {
+		envPath = "./secrets/testing.env"
+	}
+	err := godotenv.Load(envPath)
 	if err != nil {
 		panic("Error loading env file")
 	}
@@ -40,9 +45,9 @@ func InitEnv() {
 	// AMQP_USERNAME = getEnv("AMQP_USERNAME", "rabbit")
 	// AMQP_PASSWORD = getEnv("AMQP_PASSWORD", "rabbit")
 
-	POSTGRESQL_CONN_STRING_MASTER = getEnv("POSTGRESQL_CONN_STRING_MASTER","host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai")
-	POSTGRESQL_CONN_STRING_SLAVE = getEnv("POSTGRESQL_CONN_STRING_SLAVE","host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai")
-
+	// postgress
+	POSTGRESQL_CONN_STRING_MASTER = getEnv("POSTGRESQL_CONN_STRING_MASTER", "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai")
+	POSTGRESQL_CONN_STRING_SLAVE = getEnv("POSTGRESQL_CONN_STRING_SLAVE", "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai")
 	maxOpenConns, err := strconv.Atoi(getEnv("POSTGRESQL_MAX_OPEN_CONNS", "10"))
 	if err != nil {
 		panic("Invalid value for POSTGRESQL_MAX_OPEN_CONNS")
@@ -53,6 +58,9 @@ func InitEnv() {
 		panic("Invalid value for POSTGRESQL_MAX_IDLE_CONNS")
 	}
 	POSTGRESQL_MAX_IDLE_CONNS = maxIdleConns
+
+	// grpc
+	PRODUCT_SERVICE_ADDR = getEnv("PRODUCT_SERVICE_ADDR", "product.default.svc.cluster.local:50051")
 
 }
 
