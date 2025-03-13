@@ -38,3 +38,43 @@ func (p *ProductController) CreateProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
+func (p *ProductController) UpdateProduct(c *gin.Context) {
+	var product pb.UpdateProductRequest
+	if err := c.ShouldBindJSON(&product); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := services.NewProductService().UpdateProduct(c.Request.Context(), &product)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+func (p *ProductController) DeleteProduct(c *gin.Context) {
+	var product pb.DeleteProductRequest
+	product.Id = c.Param("id")
+	// if err := c.ShouldBindJSON(&product); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	// 	return
+	// }
+
+	_, err := services.NewProductService().DeleteProduct(c.Request.Context(), &product)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
+}
+
+func (p *ProductController) GetProductById(c *gin.Context) {
+	id := c.Param("id")
+	product, err := services.NewProductService().GetProductById(c.Request.Context(), &pb.GetProductRequest{Id: id})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, product)
+}
