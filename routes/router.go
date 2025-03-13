@@ -70,7 +70,7 @@ func InitRoutes() {
 	productRoute := v1.Group("/product")
 	productRoute.GET("", product.GetProduct)
 	productRoute.POST("", product.CreateProduct)
-	productRoute.PUT("", product.UpdateProduct)
+	productRoute.PATCH("", product.UpdateProduct)
 	productRoute.DELETE("/:id", product.DeleteProduct)
 	productRoute.GET("/:id", product.GetProductById)
 	// // Swagger
