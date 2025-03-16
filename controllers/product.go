@@ -1,9 +1,10 @@
 package controllers
 
 import (
+	pb "backend/proto"
 	"backend/services"
 	"net/http"
-	pb "backend/proto"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,7 +26,12 @@ func (p *ProductController) GetProduct(c *gin.Context) {
 
 func (p *ProductController) CreateProduct(c *gin.Context) {
 	var product pb.CreateProductRequest
-	product.MerchantId = c.GetString("user_id")
+	merchantId, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid merchant ID"})
+		return
+	}
+	product.MerchantId = uint64(merchantId.(float64))
 	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -41,7 +47,13 @@ func (p *ProductController) CreateProduct(c *gin.Context) {
 
 func (p *ProductController) UpdateProduct(c *gin.Context) {
 	var product pb.UpdateProductRequest
-	product.MerchantId = c.GetString("user_id")
+	merchantId, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid merchant ID"})
+		return
+	}
+	product.MerchantId = uint64(merchantId.(float64))
+
 	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -57,10 +69,21 @@ func (p *ProductController) UpdateProduct(c *gin.Context) {
 
 func (p *ProductController) DeleteProduct(c *gin.Context) {
 	var product pb.DeleteProductRequest
-	product.Id = c.Param("id")
-	product.MerchantId = c.GetString("user_id")
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+		return
+	}
+	product.Id = id
 
-	_, err := services.NewProductService().DeleteProduct(c.Request.Context(), &product)
+	merchantId, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid merchant ID"})
+		return
+	}
+	product.MerchantId = uint64(merchantId.(float64))
+
+	_, err = services.NewProductService().DeleteProduct(c.Request.Context(), &product)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -69,7 +92,11 @@ func (p *ProductController) DeleteProduct(c *gin.Context) {
 }
 
 func (p *ProductController) GetProductById(c *gin.Context) {
-	id := c.Param("id")
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+		return
+	}
 	product, err := services.NewProductService().GetProductById(c.Request.Context(), &pb.GetProductRequest{Id: id})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
