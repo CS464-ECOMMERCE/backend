@@ -22,6 +22,7 @@ var (
 	POSTGRESQL_MAX_IDLE_CONNS     int
 	POSTGRESQL_MAX_OPEN_CONNS     int
 	PRODUCT_SERVICE_ADDR          string
+	JWT_SECRET                    string
 )
 
 func InitEnv() {
@@ -34,6 +35,8 @@ func InitEnv() {
 	if err != nil {
 		panic("Error loading env file")
 	}
+	// jwt secret
+	JWT_SECRET = getEnv("JWT_SECRET", "secret")
 
 	// rest api
 	PORT = getEnv("API_PORT", "8080")
@@ -44,7 +47,7 @@ func InitEnv() {
 	// AMQP_HOSTNAME = getEnv("AMQP_HOSTNAME", "rabbitmq.default.svc.cluster.local")
 	// AMQP_USERNAME = getEnv("AMQP_USERNAME", "rabbit")
 	// AMQP_PASSWORD = getEnv("AMQP_PASSWORD", "rabbit")
-
+	
 	// postgress
 	POSTGRESQL_CONN_STRING_MASTER = getEnv("POSTGRESQL_CONN_STRING_MASTER", "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai")
 	POSTGRESQL_CONN_STRING_SLAVE = getEnv("POSTGRESQL_CONN_STRING_SLAVE", "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai")
