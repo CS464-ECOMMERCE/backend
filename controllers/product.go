@@ -21,7 +21,7 @@ func (p *ProductController) GetProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit"})
 		return
 	}
-	cursor, err := strconv.ParseUint(c.DefaultQuery("cursor", "10"), 10, 64)
+	cursor, err := strconv.ParseUint(c.DefaultQuery("cursor", "1"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid cursor"})
 		return
