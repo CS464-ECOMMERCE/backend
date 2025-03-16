@@ -25,6 +25,7 @@ func (p *ProductController) GetProduct(c *gin.Context) {
 
 func (p *ProductController) CreateProduct(c *gin.Context) {
 	var product pb.CreateProductRequest
+	product.MerchantId = c.GetString("user_id")
 	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -40,6 +41,7 @@ func (p *ProductController) CreateProduct(c *gin.Context) {
 
 func (p *ProductController) UpdateProduct(c *gin.Context) {
 	var product pb.UpdateProductRequest
+	product.MerchantId = c.GetString("user_id")
 	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -56,10 +58,7 @@ func (p *ProductController) UpdateProduct(c *gin.Context) {
 func (p *ProductController) DeleteProduct(c *gin.Context) {
 	var product pb.DeleteProductRequest
 	product.Id = c.Param("id")
-	// if err := c.ShouldBindJSON(&product); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
+	product.MerchantId = c.GetString("user_id")
 
 	_, err := services.NewProductService().DeleteProduct(c.Request.Context(), &product)
 	if err != nil {

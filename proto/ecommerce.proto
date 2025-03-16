@@ -56,6 +56,7 @@ message Product {
   repeated string images = 6; // [bucketname+filename]
   string stripe_price_id = 7;
   string stripe_product_id = 8;
+  string merchant_id = 9;
   // Categories such as "clothing" or "kitchen" that can be used to look up
   // other related products.
   //   repeated string categories = 6;
@@ -70,6 +71,7 @@ message CreateProductRequest {
   float price = 2;
   int32 inventory = 3;
   string description = 4;
+  string merchant_id = 5;
   // repeated string categories = 6;
 }
 
@@ -82,10 +84,14 @@ message UpdateProductRequest {
   repeated string images = 6;
   string stripe_price_id = 7;
   string stripe_product_id = 8;
+  string merchant_id = 9;
   // repeated string categories = 7;
 }
 
-message DeleteProductRequest { string id = 1; }
+message DeleteProductRequest { 
+  string id = 1;
+  string merchant_id = 2; 
+}
 
 message ListProductsResponse { repeated Product products = 1; }
 

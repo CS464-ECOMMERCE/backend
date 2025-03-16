@@ -32,14 +32,7 @@ import (
 // @externalDocs.description	OpenAPI
 // @externalDocs.url			https://swagger.io/resources/open-api/
 func InitRoutes() {
-
-	// challenge := controllers.NewChallengeController(configs.Client)
-	// image := controllers.NewImageController(configs.Client)
-	// process := controllers.NewProcessController(configs.Client)
-	// attempt := controllers.NewAttemptController(configs.Client)
-
 	health := controllers.NewHealthController()
-	item := controllers.NewItemController()
 	product := controllers.NewProductController()
 	user := controllers.NewUserController()
 	router := gin.Default()
@@ -59,28 +52,20 @@ func InitRoutes() {
 	router.Use(cors.New(config))
 
 	v1 := router.Group("/api/v1")
-
 	v1.GET("/health", health.HealthCheck)
 
-	itemRoute := v1.Group("/item")
-	itemRoute.POST("", item.CreateItem)
-	itemRoute.GET("/:id", item.GetItem)
-	itemRoute.PUT("", item.UpdateItem)
-	itemRoute.DELETE("/:id", item.DeleteItem)
-
+	// product routes
 	productRoute := v1.Group("/product")
 	productRoute.GET("", product.GetProduct)
-	productRoute.POST("", product.CreateProduct)
-	productRoute.PATCH("", product.UpdateProduct)
-	productRoute.DELETE("/:id", product.DeleteProduct)
+	productRoute.POST("", middleware.CheckAuth, product.CreateProduct)
+	productRoute.PATCH("", middleware.CheckAuth, product.UpdateProduct)
+	productRoute.DELETE("/:id", middleware.CheckAuth, product.DeleteProduct)
 	productRoute.GET("/:id", product.GetProductById)
 
+	// user routes
 	userRoute := v1.Group("/user")
 	userRoute.POST("/register", user.Register)
 	userRoute.POST("/login", user.Login)
-
-	// // Swagger
-	// router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Run(":" + configs.PORT)
 }

@@ -13,7 +13,6 @@ import (
 type Storage struct {
 	read  *gorm.DB
 	write *gorm.DB
-	Item  ItemInterface
 	User  UserInterface
 }
 
@@ -64,7 +63,6 @@ func GetStorageInstance() *Storage {
 	once.Do(func() {
 		StorageInstance = &Storage{}
 		StorageInstance.InitDB()
-		StorageInstance.Item = NewItemTable(StorageInstance.read, StorageInstance.write)
 		StorageInstance.User = NewUserTable(StorageInstance.read, StorageInstance.write)
 	})
 	return StorageInstance
