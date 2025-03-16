@@ -16,7 +16,21 @@ func NewProductController() *ProductController {
 }
 
 func (p *ProductController) GetProduct(c *gin.Context) {
-	products, err := services.NewProductService().GetProduct(c.Request.Context())
+	limit, err := strconv.ParseUint(c.DefaultQuery("limit", "10"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit"})
+		return
+	}
+	cursor, err := strconv.ParseUint(c.DefaultQuery("cursor", "10"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid cursor"})
+		return
+	}
+
+	products, err := services.NewProductService().GetProduct(c.Request.Context(), &pb.ListProductsRequest{
+		Cursor: cursor,
+		Limit:  limit,
+	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

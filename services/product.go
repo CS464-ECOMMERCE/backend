@@ -13,9 +13,9 @@ func NewProductService() *ProductService {
 	return &ProductService{}
 }
 
-func (p *ProductService) GetProduct(ctx context.Context) ([]*pb.Product, error) {
-	resp, err := pb.NewProductServiceClient(grpc.ApiServerInstance.ProductServiceConn).ListProducts(ctx, &pb.Empty{})
-	return resp.GetProducts(), err
+func (p *ProductService) GetProduct(ctx context.Context, req *pb.ListProductsRequest) (*pb.ListProductsResponse, error) {
+	resp, err := pb.NewProductServiceClient(grpc.ApiServerInstance.ProductServiceConn).ListProducts(ctx, req)
+	return resp, err
 }
 
 func (p *ProductService) CreateProduct(ctx context.Context, product *pb.CreateProductRequest) (*pb.Product, error) {
