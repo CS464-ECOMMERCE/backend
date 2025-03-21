@@ -57,11 +57,13 @@ func InitRoutes() {
 	// product routes
 	productRoute := v1.Group("/product")
 	productRoute.GET("", product.GetProduct)
+	productRoute.GET("/merchant", middleware.CheckAuth, product.GetProductByMerchantId)
+
 	productRoute.POST("", middleware.CheckAuth, product.CreateProduct)
 	productRoute.PATCH("", middleware.CheckAuth, product.UpdateProduct)
 	productRoute.DELETE("/:id", middleware.CheckAuth, product.DeleteProduct)
 	productRoute.GET("/:id", product.GetProductById)
-	productRoute.POST("/upload", middleware.CheckAuth, product.UpdateProductImages)
+	productRoute.POST("/upload/:id", middleware.CheckAuth, product.UpdateProductImages)
 
 	// user routes
 	userRoute := v1.Group("/user")
