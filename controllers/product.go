@@ -3,6 +3,7 @@ package controllers
 import (
 	pb "backend/proto"
 	"backend/services"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -21,7 +22,7 @@ func (p *ProductController) GetProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit"})
 		return
 	}
-	cursor, err := strconv.ParseUint(c.DefaultQuery("cursor", "1"), 10, 64)
+	cursor, err := strconv.ParseUint(c.DefaultQuery("cursor", "0"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid cursor"})
 		return
@@ -117,4 +118,23 @@ func (p *ProductController) GetProductById(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, product)
+}
+
+func (p *ProductController) UpdateProductImages(c *gin.Context) {
+	var product pb.UpdateProductImagesRequest
+	if err := c.ShouldBindJSON(&product); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	resp, err := services.NewProductService().UpdateProductImages(c.Request.Context(), &product)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.Writer.Header().Set("Content-Type", "application/json")
+	encoder := json.NewEncoder(c.Writer)
+	encoder.SetEscapeHTML(false) // Prevent escaping of `&`
+	encoder.Encode(resp)
+	// c.JSON(http.StatusOK, gin.H{"presigned_url": resp.PresignedUrl})
 }

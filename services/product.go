@@ -37,3 +37,8 @@ func (p *ProductService) GetProductById(ctx context.Context, product *pb.GetProd
 	resp, err := pb.NewProductServiceClient(grpc.ApiServerInstance.ProductServiceConn).GetProduct(ctx, product)
 	return resp, err
 }
+
+func (p *ProductService) UpdateProductImages(ctx context.Context, product *pb.UpdateProductImagesRequest) (*pb.UpdateProductImagesResponse, error) {
+	resp, err := pb.NewProductServiceClient(grpc.ApiServerInstance.ProductServiceConn).UpdateProductImages(ctx, product)
+	return resp, err
+}

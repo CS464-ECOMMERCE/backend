@@ -61,6 +61,7 @@ func InitRoutes() {
 	productRoute.PATCH("", middleware.CheckAuth, product.UpdateProduct)
 	productRoute.DELETE("/:id", middleware.CheckAuth, product.DeleteProduct)
 	productRoute.GET("/:id", product.GetProductById)
+	productRoute.POST("/upload", middleware.CheckAuth, product.UpdateProductImages)
 
 	// user routes
 	userRoute := v1.Group("/user")

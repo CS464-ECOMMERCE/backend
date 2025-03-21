@@ -10,7 +10,7 @@ const (
 
 type User struct {
 	ID           int      `json:"id"`
-	Email        string   `json:"email"`
+	Email        string   `json:"email" gorm:"unique"`
 	PasswordHash string   `json:"-"` // "-" means this won't be included in JSON
 	Role         UserRole `json:"role"`
 }
