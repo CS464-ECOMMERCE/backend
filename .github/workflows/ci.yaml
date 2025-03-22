@@ -7,11 +7,10 @@ on:
   workflow_dispatch: # Allows manual triggering
 
 env:
-  SERVICE_NAME: backend # Change accordingly
   REGISTRY: docker.io
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE_NAME }}
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
   HELM_REPO: git@github.com:CS464-ECOMMERCE/k8s.git
-  HELM_CHART_PATH: ${{ env.SERVICE_NAME }}_chart/helm
+  HELM_CHART_PATH: ${{ github.event.repository.name }}_chart/helm
   APP_NAME: gitops-argocd-deploy
 
 jobs:
