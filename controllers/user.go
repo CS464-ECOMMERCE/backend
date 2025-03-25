@@ -50,7 +50,7 @@ func (c *UserController) Login(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.SetCookie("token", response.Token, 60*60*24, "/", "", false, true)
+	ctx.SetCookie("token", response.Token, 60*60*24, "/", "", false, false)
 
 	ctx.JSON(http.StatusOK, response)
 }

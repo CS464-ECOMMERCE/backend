@@ -11,6 +11,7 @@ import (
 
 type ApiServer struct {
 	ProductServiceConn *grpc.ClientConn
+	CartServiceConn    *grpc.ClientConn
 }
 
 func mustConnGRPC(conn **grpc.ClientConn, addr string) {
@@ -44,4 +45,5 @@ var ApiServerInstance *ApiServer
 func Init() {
 	ApiServerInstance = &ApiServer{}
 	mustConnGRPC(&ApiServerInstance.ProductServiceConn, configs.PRODUCT_SERVICE_ADDR)
+	mustConnGRPC(&ApiServerInstance.CartServiceConn, configs.CART_SERVICE_ADDR)
 }

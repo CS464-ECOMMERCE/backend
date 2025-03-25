@@ -35,6 +35,7 @@ func InitRoutes() {
 	health := controllers.NewHealthController()
 	product := controllers.NewProductController()
 	user := controllers.NewUserController()
+	cart := controllers.NewCartController()
 	router := gin.Default()
 
 	// // recover from panics and respond with internal server error
@@ -58,7 +59,6 @@ func InitRoutes() {
 	productRoute := v1.Group("/product")
 	productRoute.GET("", product.GetProduct)
 	productRoute.GET("/merchant", middleware.CheckAuth, product.GetProductByMerchantId)
-
 	productRoute.POST("", middleware.CheckAuth, product.CreateProduct)
 	productRoute.PATCH("", middleware.CheckAuth, product.UpdateProduct)
 	productRoute.DELETE("/:id", middleware.CheckAuth, product.DeleteProduct)
@@ -69,6 +69,14 @@ func InitRoutes() {
 	userRoute := v1.Group("/user")
 	userRoute.POST("/register", user.Register)
 	userRoute.POST("/login", user.Login)
+
+	// cart routes
+	cartRoute := v1.Group("/cart")
+	cartRoute.POST("/add", middleware.CheckSession, cart.AddItem)
+	cartRoute.GET("", middleware.CheckSession, cart.GetCart)
+	cartRoute.POST("/update", middleware.CheckSession, cart.UpdateItemQuantity)
+	cartRoute.POST("/remove_item", middleware.CheckSession, cart.RemoveItem)
+	cartRoute.POST("/empty", middleware.CheckSession, cart.EmptyCart)
 
 	router.Run(":" + configs.PORT)
 }
