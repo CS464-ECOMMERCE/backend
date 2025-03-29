@@ -41,7 +41,7 @@ func (c *CartService) EmptyCart(ctx context.Context, sessionID string) error {
 func (c *CartService) RemoveItem(ctx context.Context, sessionID string, productId uint64) error {
 	_, err := pb.NewCartServiceClient(grpc.ApiServerInstance.CartServiceConn).RemoveItem(ctx, &pb.RemoveItemRequest{
 		SessionId: sessionID,
-		ProductId: productId,
+		Id:        productId,
 	})
 	return err
 }
@@ -49,7 +49,7 @@ func (c *CartService) RemoveItem(ctx context.Context, sessionID string, productI
 func (c *CartService) UpdateItemQuantity(ctx context.Context, sessionID string, productID uint64, quantity uint64) error {
 	_, err := pb.NewCartServiceClient(grpc.ApiServerInstance.CartServiceConn).UpdateItemQuantity(ctx, &pb.UpdateItemQuantityRequest{
 		SessionId: sessionID,
-		ProductId: productID,
+		Id:        productID,
 		Quantity:  quantity,
 	})
 	return err
