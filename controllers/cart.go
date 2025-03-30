@@ -75,14 +75,14 @@ func (c *CartController) RemoveItem(ctx *gin.Context) {
 	}
 
 	var req struct {
-		ProductID uint64 `json:"product_id"`
+		Id uint64 `json:"id"`
 	}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := services.NewCartService().RemoveItem(ctx, sessionID.(string), req.ProductID); err != nil {
+	if err := services.NewCartService().RemoveItem(ctx, sessionID.(string), req.Id); err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
@@ -97,16 +97,13 @@ func (c *CartController) UpdateItemQuantity(ctx *gin.Context) {
 		return
 	}
 
-	var req struct {
-		ProductID uint64 `json:"product_id"`
-		Quantity  uint64 `json:"quantity"`
-	}
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	var item pb.CartItem
+	if err := ctx.ShouldBindJSON(&item); err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := services.NewCartService().UpdateItemQuantity(ctx, sessionID.(string), req.ProductID, req.Quantity); err != nil {
+	if err := services.NewCartService().UpdateItemQuantity(ctx, sessionID.(string), item.Id, item.Quantity); err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
