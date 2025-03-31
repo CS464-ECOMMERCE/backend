@@ -36,6 +36,7 @@ func InitRoutes() {
 	product := controllers.NewProductController()
 	user := controllers.NewUserController()
 	cart := controllers.NewCartController()
+	order := controllers.NewOrderController()
 	router := gin.Default()
 
 	// // recover from panics and respond with internal server error
@@ -77,6 +78,15 @@ func InitRoutes() {
 	cartRoute.POST("/update", middleware.CheckSession, cart.UpdateItemQuantity)
 	cartRoute.POST("/remove_item", middleware.CheckSession, cart.RemoveItem)
 	cartRoute.POST("/empty", middleware.CheckSession, cart.EmptyCart)
+
+	// order routes
+	orderRoute := v1.Group("/order")
+	orderRoute.POST("/create", middleware.CheckSession, order.CreateOrder)
+	orderRoute.GET("", order.GetOrder)
+	orderRoute.GET("/merchant", middleware.CheckAuth, order.GetOrdersByMerchant)
+	orderRoute.POST("/update", middleware.CheckAuth, order.UpdateOrderStatus)
+	orderRoute.POST("/cancel", middleware.CheckAuth, order.CancelOrder)
+	orderRoute.POST("/delete", middleware.CheckAuth, order.DeleteOrder)
 
 	router.Run(":" + configs.PORT)
 }

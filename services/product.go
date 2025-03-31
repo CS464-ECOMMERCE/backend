@@ -87,3 +87,4 @@ func (p *ProductService) GetProductByMerchantId(ctx context.Context, req *pb.Lis
 	resp, err := pb.NewProductServiceClient(grpc.ApiServerInstance.ProductServiceConn).ListProducts(ctx, req)
 	return resp, err
 }
+

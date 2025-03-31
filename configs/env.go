@@ -23,6 +23,7 @@ var (
 	POSTGRESQL_MAX_OPEN_CONNS     int
 	PRODUCT_SERVICE_ADDR          string
 	CART_SERVICE_ADDR             string
+	ORDER_SERVICE_ADDR            string
 	JWT_SECRET                    string
 )
 
@@ -66,7 +67,7 @@ func InitEnv() {
 	// grpc
 	PRODUCT_SERVICE_ADDR = getEnv("PRODUCT_SERVICE_ADDR", "product.default.svc.cluster.local:50050")
 	CART_SERVICE_ADDR = getEnv("CART_SERVICE_ADDR", "cart.default.svc.cluster.local:50050")
-
+	ORDER_SERVICE_ADDR = getEnv("ORDER_SERVICE_ADDR", "order.default.svc.cluster.local:50050")
 }
 
 func GetMongoURI() string {
