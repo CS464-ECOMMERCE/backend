@@ -86,13 +86,13 @@ func (o *OrderController) GetOrderByEmail(c *gin.Context) {
 
 func (o *OrderController) GetOrdersByMerchant(c *gin.Context) {
 	// Get user ID from JWT token (assuming you've set it in middleware)
-	userID := c.GetInt("user_id")
-	if userID == 0 {
+	userID, exists := c.Get("user_id")
+	if !exists {
 		c.JSON(401, gin.H{"error": "unauthorized"})
 		return
 	}
 
-	orders, err := services.NewOrderService().GetOrdersByMerchant(c, uint64(userID))
+	orders, err := services.NewOrderService().GetOrdersByMerchant(c, uint64(userID.(float64)))
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
