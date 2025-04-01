@@ -142,3 +142,20 @@ func (s *UserService) generateJWT(user models.User) (string, error) {
 
 	return token.SignedString(s.jwtSecret)
 }
+
+// create a new user if does not exists otherwise retrieve user details
+func (s *UserService) CreateBuyerAccountIfNotExist(email string) (*models.User, error) {
+	user, err := storage.StorageInstance.User.FindByEmail(email)
+
+	if err != nil { // user not found; create user
+		registerRequest := &models.RegisterUserRequest{
+			Email: email,
+		}
+		user, err = s.Register(registerRequest)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return user, nil
+}

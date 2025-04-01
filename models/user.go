@@ -25,7 +25,7 @@ type Merchant struct {
 // Request/Response structs
 type RegisterUserRequest struct {
 	Email        string    `json:"email" binding:"required,email"`
-	Password     string    `json:"password" binding:"required,min=6"`
+	Password     string    `json:"password" binding:"required_if=Role merchant,min=6"`
 	Role         *UserRole `json:"role,omitempty"`
 	BusinessName string    `json:"business_name,omitempty" binding:"required_if=Role merchant"`
 	TaxID        string    `json:"tax_id,omitempty"`

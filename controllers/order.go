@@ -19,7 +19,22 @@ func (o *OrderController) CreateOrder(c *gin.Context) {
 		return
 	}
 
-	if err := services.NewOrderService().PlaceOrder(c, sessionID.(string)); err != nil {
+	var req struct {
+		Email string `json:"email" binding:"required,email"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "email is required"})
+		return
+	}
+
+	user, err := services.NewUserService().CreateBuyerAccountIfNotExist(req.Email)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := services.NewOrderService().PlaceOrder(c, sessionID.(string), uint64(user.ID)); err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
