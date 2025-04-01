@@ -83,6 +83,7 @@ func InitRoutes() {
 	orderRoute := v1.Group("/order")
 	orderRoute.POST("/create", middleware.CheckSession, order.CreateOrder)
 	orderRoute.GET("", order.GetOrder)
+	orderRoute.GET("/user", order.GetOrderByEmail)
 	orderRoute.GET("/merchant", middleware.CheckAuth, order.GetOrdersByMerchant)
 	orderRoute.POST("/update", middleware.CheckAuth, order.UpdateOrderStatus)
 	orderRoute.POST("/cancel", middleware.CheckAuth, order.CancelOrder)

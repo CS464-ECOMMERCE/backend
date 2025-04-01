@@ -28,6 +28,13 @@ func (o *OrderService) GetOrder(ctx context.Context, orderId uint64) (*pb.Order,
 	return resp, err
 }
 
+func (o *OrderService) GetOrdersByUser(ctx context.Context, userId uint64) (*pb.GetOrdersResponse, error) {
+	resp, err := pb.NewOrderServiceClient(grpc.ApiServerInstance.OrderServiceConn).GetOrdersByUser(ctx, &pb.GetOrdersByUserRequest{
+		UserId: userId,
+	})
+	return resp, err
+}
+
 func (o *OrderService) GetOrdersByMerchant(ctx context.Context, merchantId uint64) (*pb.GetOrdersResponse, error) {
 	resp, err := pb.NewOrderServiceClient(grpc.ApiServerInstance.OrderServiceConn).GetOrdersByMerchant(ctx, &pb.GetOrdersByMerchantRequest{
 		MerchantId: merchantId,

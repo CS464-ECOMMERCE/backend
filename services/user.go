@@ -159,3 +159,7 @@ func (s *UserService) CreateBuyerAccountIfNotExist(email string) (*models.User, 
 
 	return user, nil
 }
+
+func (s *UserService) GetUserByEmail(email string) (*models.User, error) {
+	return storage.StorageInstance.User.FindByEmail(email)
+}

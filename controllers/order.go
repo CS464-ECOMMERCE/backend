@@ -60,6 +60,30 @@ func (o *OrderController) GetOrder(c *gin.Context) {
 	c.JSON(200, order)
 }
 
+func (o *OrderController) GetOrderByEmail(c *gin.Context) {
+	var req struct {
+		Email string `json:"email"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "email is required"})
+		return
+	}
+
+	user, err := services.NewUserService().GetUserByEmail(req.Email)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	orders, err := services.NewOrderService().GetOrdersByUser(c, uint64(user.ID))
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, orders)
+}
+
 func (o *OrderController) GetOrdersByMerchant(c *gin.Context) {
 	// Get user ID from JWT token (assuming you've set it in middleware)
 	userID := c.GetInt("user_id")
