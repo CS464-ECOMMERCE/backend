@@ -25,6 +25,7 @@ var (
 	CART_SERVICE_ADDR             string
 	ORDER_SERVICE_ADDR            string
 	JWT_SECRET                    string
+	STRIPE_ENDPOINT_SECRET        string
 )
 
 func InitEnv() {
@@ -68,6 +69,9 @@ func InitEnv() {
 	PRODUCT_SERVICE_ADDR = getEnv("PRODUCT_SERVICE_ADDR", "product.default.svc.cluster.local:50050")
 	CART_SERVICE_ADDR = getEnv("CART_SERVICE_ADDR", "cart.default.svc.cluster.local:50050")
 	ORDER_SERVICE_ADDR = getEnv("ORDER_SERVICE_ADDR", "order.default.svc.cluster.local:50050")
+
+	// stripe
+	STRIPE_ENDPOINT_SECRET = getEnv("STRIPE_ENDPOINT_SECRET", "stripe-endpoint-secret")
 }
 
 func GetMongoURI() string {

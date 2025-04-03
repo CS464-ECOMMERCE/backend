@@ -13,15 +13,6 @@ func NewOrderService() *OrderService {
 	return &OrderService{}
 }
 
-func (o *OrderService) PlaceOrder(ctx context.Context, sessionID, email string, userID uint64) (*pb.PlaceOrderResponse, error) {
-	sess, err := pb.NewOrderServiceClient(grpc.ApiServerInstance.OrderServiceConn).PlaceOrder(ctx, &pb.PlaceOrderRequest{
-		SessionId: sessionID,
-		UserId:    userID,
-		UserEmail: email,
-	})
-	return sess, err
-}
-
 func (o *OrderService) GetOrder(ctx context.Context, orderId uint64) (*pb.Order, error) {
 	resp, err := pb.NewOrderServiceClient(grpc.ApiServerInstance.OrderServiceConn).GetOrder(ctx, &pb.GetOrderRequest{
 		Id: orderId,

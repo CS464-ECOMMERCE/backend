@@ -192,3 +192,40 @@ func (p *ProductController) UpdateProductImages(c *gin.Context) {
 	encoder.Encode(resp)
 	return
 }
+
+func (p *ProductController) CreateOrder(c *gin.Context) {
+	sessionID, exists := c.Get("session_id")
+	if !exists {
+		c.JSON(400, gin.H{"error": "Invalid session ID"})
+		return
+	}
+
+	var req struct {
+		Email string `json:"email" binding:"required,email"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(400, gin.H{"error": "email is required"})
+		return
+	}
+
+	user, err := services.NewUserService().CreateBuyerAccountIfNotExist(req.Email)
+	if err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
+	}
+
+	placeOrderRequest := &pb.PlaceOrderRequest{
+		SessionId: sessionID.(string),
+		UserEmail: req.Email,
+		UserId:    uint64(user.ID),
+	}
+
+	sess, err := services.NewProductService().PlaceOrder(c, placeOrderRequest)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(200, gin.H{"checkoutUrl": sess.CheckoutUrl})
+}

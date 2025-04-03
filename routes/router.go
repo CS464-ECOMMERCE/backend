@@ -37,6 +37,7 @@ func InitRoutes() {
 	user := controllers.NewUserController()
 	cart := controllers.NewCartController()
 	order := controllers.NewOrderController()
+	stripeCon := controllers.NewStripeController()
 	router := gin.Default()
 
 	// // recover from panics and respond with internal server error
@@ -51,10 +52,17 @@ func InitRoutes() {
 	config := cors.DefaultConfig()
 	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
 	config.AllowAllOrigins = true
+	// config.AllowOrigins = []string{
+	// 	"http://localhost:3000",
+	// 	"https://*.stripe.com",
+	// }
+	// config.AllowCredentials = true
 	router.Use(cors.New(config))
 
 	v1 := router.Group("/api/v1")
 	v1.GET("/health", health.HealthCheck)
+
+	v1.POST("/create_order", middleware.CheckSession, product.CreateOrder)
 
 	// product routes
 	productRoute := v1.Group("/product")
@@ -81,13 +89,16 @@ func InitRoutes() {
 
 	// order routes
 	orderRoute := v1.Group("/order")
-	orderRoute.POST("/create", middleware.CheckSession, order.CreateOrder)
 	orderRoute.GET("", order.GetOrder)
 	orderRoute.GET("/user", order.GetOrderByEmail)
 	orderRoute.GET("/merchant", middleware.CheckAuth, order.GetOrdersByMerchant)
 	orderRoute.POST("/update", middleware.CheckAuth, order.UpdateOrderStatus)
 	orderRoute.POST("/cancel", middleware.CheckAuth, order.CancelOrder)
 	orderRoute.POST("/delete", middleware.CheckAuth, order.DeleteOrder)
+
+	// stripe webhook routes
+	stripeRoute := v1.Group("/stripe")
+	stripeRoute.POST("/webhook", middleware.CheckSession, stripeCon.Webhook)
 
 	router.Run(":" + configs.PORT)
 }

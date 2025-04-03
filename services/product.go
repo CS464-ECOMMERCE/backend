@@ -88,3 +88,7 @@ func (p *ProductService) GetProductByMerchantId(ctx context.Context, req *pb.Lis
 	return resp, err
 }
 
+func (p *ProductService) PlaceOrder(ctx context.Context, req *pb.PlaceOrderRequest) (*pb.PlaceOrderResponse, error) {
+	resp, err := pb.NewProductServiceClient(grpc.ApiServerInstance.ProductServiceConn).PlaceOrder(ctx, req)
+	return resp, err
+}

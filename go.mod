@@ -16,6 +16,8 @@ require (
 	gorm.io/gorm v1.25.10
 )
 
+require github.com/stripe/stripe-go/v81 v81.4.0 // indirect
+
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
