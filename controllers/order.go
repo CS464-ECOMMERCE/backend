@@ -33,13 +33,13 @@ func (o *OrderController) CreateOrder(c *gin.Context) {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-
-	if err := services.NewOrderService().PlaceOrder(c, sessionID.(string), uint64(user.ID)); err != nil {
+	sess, err := services.NewOrderService().PlaceOrder(c, sessionID.(string), user.Email, uint64(user.ID))
+	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(200, gin.H{"status": "success"})
+	c.JSON(200, gin.H{"checkoutUrl": sess.CheckoutUrl})
 }
 
 func (o *OrderController) GetOrder(c *gin.Context) {

@@ -145,6 +145,7 @@ func (s *UserService) generateJWT(user models.User) (string, error) {
 
 // create a new user if does not exists otherwise retrieve user details
 func (s *UserService) CreateBuyerAccountIfNotExist(email string) (*models.User, error) {
+	var user *models.User
 	user, err := storage.StorageInstance.User.FindByEmail(email)
 
 	if err != nil { // user not found; create user
