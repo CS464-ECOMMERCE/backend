@@ -2,6 +2,8 @@ package middleware
 
 import (
 	"backend/configs"
+	"backend/models"
+	"slices"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
@@ -41,7 +43,16 @@ func CheckAuth(c *gin.Context) {
 		return
 	}
 
+	userRole := claims["role"].(string)
+
+	authenticatedRoles := []string{string(models.RoleAdmin), string(models.RoleMerchant)}
+	if !slices.Contains(authenticatedRoles, userRole) {
+		c.JSON(401, gin.H{"error": "Unauthorized"})
+		c.Abort()
+		return
+	}
+
 	c.Set("user_id", claims["user_id"])
-	c.Set("role", claims["role"])
+	c.Set("role", userRole)
 	c.Next()
 }

@@ -47,6 +47,10 @@ func (c *UserController) Login(ctx *gin.Context) {
 
 	response, err := services.NewUserService().Login(&req)
 	if err != nil {
+		if err.Error() == "unauthorized" {
+			ctx.JSON(http.StatusForbidden, gin.H{"error": "unauthorized"})
+			return
+		}
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}

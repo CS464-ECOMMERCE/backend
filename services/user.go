@@ -5,6 +5,7 @@ import (
 	"backend/models"
 	"backend/storage"
 	"errors"
+	"slices"
 
 	"time"
 
@@ -70,6 +71,12 @@ func (s *UserService) Register(req *models.RegisterUserRequest) (*models.User, e
 
 func (s *UserService) Login(req *models.LoginRequest) (*models.LoginResponse, error) {
 	user, err := storage.StorageInstance.User.FindByEmail(req.Email)
+
+	authenticatedRoles := []models.UserRole{models.RoleAdmin, models.RoleMerchant}
+	if !slices.Contains(authenticatedRoles, user.Role) {
+		return nil, errors.New("unauthorized")
+	}
+
 	if err != nil {
 		return nil, errors.New("invalid credentials")
 	}
