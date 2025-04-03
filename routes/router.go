@@ -37,7 +37,7 @@ func InitRoutes() {
 	user := controllers.NewUserController()
 	cart := controllers.NewCartController()
 	order := controllers.NewOrderController()
-	stripeCon := controllers.NewStripeController()
+	// stripeCon := controllers.NewStripeController()
 	router := gin.Default()
 
 	// // recover from panics and respond with internal server error
@@ -97,8 +97,8 @@ func InitRoutes() {
 	orderRoute.POST("/delete", middleware.CheckAuth, order.DeleteOrder)
 
 	// stripe webhook routes
-	stripeRoute := v1.Group("/stripe")
-	stripeRoute.POST("/webhook", middleware.CheckSession, stripeCon.Webhook)
+	// stripeRoute := v1.Group("/stripe")
+	// stripeRoute.POST("/webhook", middleware.CheckSession, stripeCon.Webhook)
 
 	router.Run(":" + configs.PORT)
 }
