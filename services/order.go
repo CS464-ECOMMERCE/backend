@@ -55,3 +55,12 @@ func (o *OrderService) DeleteOrder(ctx context.Context, id uint64) error {
 	})
 	return err
 }
+
+func (o *OrderService) UpdatePaymentStatus(ctx context.Context, event string, orderId uint64) error {
+	_, err := pb.NewOrderServiceClient(grpc.ApiServerInstance.OrderServiceConn).UpdatePaymentStatus(ctx, &pb.UpdatePaymentStatusRequest{
+		Event:   event,
+		OrderId: orderId,
+	})
+
+	return err
+}
