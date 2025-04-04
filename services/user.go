@@ -24,7 +24,7 @@ func NewUserService() *UserService {
 }
 
 func (s *UserService) Register(req *models.RegisterUserRequest) (*models.User, error) {
-	// Check if email already exists\
+	// Check if email already exists
 	existingUser, err := storage.StorageInstance.User.FindByEmail(req.Email)
 	if err == nil && existingUser != nil {
 		return nil, errors.New("email already exists")
@@ -71,7 +71,7 @@ func (s *UserService) Register(req *models.RegisterUserRequest) (*models.User, e
 
 func (s *UserService) Login(req *models.LoginRequest) (*models.LoginResponse, error) {
 	user, err := storage.StorageInstance.User.FindByEmail(req.Email)
-	
+
 	if user == nil {
 		return nil, errors.New("user not found")
 	}
@@ -159,7 +159,8 @@ func (s *UserService) CreateBuyerAccountIfNotExist(email string) (*models.User, 
 	var user *models.User
 	user, err := storage.StorageInstance.User.FindByEmail(email)
 
-	if err != nil { // user not found; create user
+	// create user if user is not found
+	if user == nil {
 		registerRequest := &models.RegisterUserRequest{
 			Email: email,
 		}
