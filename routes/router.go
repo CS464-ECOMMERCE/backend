@@ -50,12 +50,12 @@ func InitRoutes() {
 	// enabling cors
 	config := cors.DefaultConfig()
 	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
-	config.AllowAllOrigins = true
-	// config.AllowOrigins = []string{
-	// 	"http://localhost:3000",
-	// 	"https://*.stripe.com",
-	// }
-	// config.AllowCredentials = true
+	// config.AllowAllOrigins = true
+	config.AllowOrigins = []string{
+		"http://localhost:3000",
+		"https://*.stripe.com",
+	}
+	config.AllowCredentials = true
 	router.Use(cors.New(config))
 
 	v1 := router.Group("/api/v1")
