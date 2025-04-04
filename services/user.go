@@ -71,6 +71,10 @@ func (s *UserService) Register(req *models.RegisterUserRequest) (*models.User, e
 
 func (s *UserService) Login(req *models.LoginRequest) (*models.LoginResponse, error) {
 	user, err := storage.StorageInstance.User.FindByEmail(req.Email)
+	
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
 
 	authenticatedRoles := []models.UserRole{models.RoleAdmin, models.RoleMerchant}
 	if !slices.Contains(authenticatedRoles, user.Role) {

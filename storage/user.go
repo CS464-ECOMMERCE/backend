@@ -39,8 +39,12 @@ func (s *UserStorage) CreateMerchant(merchant *models.Merchant) error {
 func (s *UserStorage) FindByEmail(email string) (*models.User, error) {
 	var user models.User
 	if err := s.read.Where("email = ?", email).First(&user).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
 		return nil, err
 	}
+	
 	return &user, nil
 }
 
