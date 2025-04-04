@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 	"slices"
 	"strconv"
 
@@ -136,13 +137,18 @@ func (o *OrderController) DeleteOrder(c *gin.Context) {
 func (o *OrderController) HandleStripeWebhook(c *gin.Context) {
 	event := o.verifyEvent(c)
 
+	if event == nil {
+		c.JSON(http.StatusOK, "Ok")
+		return
+	}
+
 	eventsToListen := []stripe.EventType{
 		stripe.EventTypeCheckoutSessionCompleted,
-		stripe.EventTypeCheckoutSessionCompleted,
+		stripe.EventTypeCheckoutSessionExpired,
 	}
 
 	var session stripe.CheckoutSession
-	if slices.Contains(eventsToListen, event.Type) {
+	if slices.Contains(eventsToListen, stripe.EventType(event.Type)) {
 		if err := json.Unmarshal(event.Data.Raw, &session); err != nil {
 			c.JSON(400, gin.H{"error": fmt.Sprintf("unable to unmarshal data: %v", err.Error())})
 			return
@@ -180,7 +186,7 @@ func (o *OrderController) verifyEvent(c *gin.Context) *stripe.Event {
 	}
 
 	signatureHeader := c.GetHeader("Stripe-Signature")
-	event, err = webhook.ConstructEvent(payload, signatureHeader, configs.STRIPE_ENDPOINT_SECRET)
+	event, err = webhook.ConstructEvent(payload, signatureHeader, configs.STRIPE_API_KEY)
 	if err != nil {
 		c.JSON(400, gin.H{"error": fmt.Sprintf("Error verifying webhook signature: %v", err)})
 		return nil

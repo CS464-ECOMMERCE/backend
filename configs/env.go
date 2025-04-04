@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/joho/godotenv"
+	"github.com/stripe/stripe-go/v81"
 )
 
 var (
@@ -25,7 +26,7 @@ var (
 	CART_SERVICE_ADDR             string
 	ORDER_SERVICE_ADDR            string
 	JWT_SECRET                    string
-	STRIPE_ENDPOINT_SECRET        string
+	STRIPE_API_KEY                string
 )
 
 func InitEnv() {
@@ -69,6 +70,10 @@ func InitEnv() {
 	PRODUCT_SERVICE_ADDR = getEnv("PRODUCT_SERVICE_ADDR", "product.default.svc.cluster.local:50051")
 	CART_SERVICE_ADDR = getEnv("CART_SERVICE_ADDR", "cart.default.svc.cluster.local:50051")
 	ORDER_SERVICE_ADDR = getEnv("ORDER_SERVICE_ADDR", "order.default.svc.cluster.local:50051")
+
+	// stripe
+	STRIPE_API_KEY = getEnv("STRIPE_API_KEY", "some-api-key")
+	stripe.Key = getEnv("STRIPE_SECRET_KEY", "some-secret-key")
 }
 
 func GetMongoURI() string {
