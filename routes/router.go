@@ -4,9 +4,7 @@ import (
 	"backend/configs"
 	"backend/controllers"
 	"backend/middleware"
-	"strings"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	// swaggerFiles "github.com/swaggo/files"     // swagger embed files
@@ -50,26 +48,26 @@ func InitRoutes() {
 	router.Use(middleware.TrackMetrics())
 
 	// enabling cors
-	config := cors.DefaultConfig()
-	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
-	// config.AllowAllOrigins = true
-	config.AllowCredentials = true
-	config.AllowOriginFunc = func(origin string) bool {
-		if strings.Contains(origin, "localhost") {
-			return true
-		}
-		// Allow your Vercel frontend domains
-		if strings.Contains(origin, "cs464-frontend") && strings.HasSuffix(origin, ".vercel.app") {
-			return true
-		}
-		// Optional: Allow Stripe URLs (usually not needed)
-		if strings.HasSuffix(origin, ".stripe.com") {
-			return true
-		}
-		return false
-	}
-	config.ExposeHeaders = []string{"Set-Cookie"}
-	router.Use(cors.New(config))
+	// config := cors.DefaultConfig()
+	// config.AllowHeaders = append(config.AllowHeaders, "Authorization")
+	// // config.AllowAllOrigins = true
+	// config.AllowCredentials = true
+	// config.AllowOriginFunc = func(origin string) bool {
+	// 	if strings.Contains(origin, "localhost") {
+	// 		return true
+	// 	}
+	// 	// Allow your Vercel frontend domains
+	// 	if strings.Contains(origin, "cs464-frontend") && strings.HasSuffix(origin, ".vercel.app") {
+	// 		return true
+	// 	}
+	// 	// Optional: Allow Stripe URLs (usually not needed)
+	// 	if strings.HasSuffix(origin, ".stripe.com") {
+	// 		return true
+	// 	}
+	// 	return false
+	// }
+	// config.ExposeHeaders = []string{"Set-Cookie"}
+	router.Use(middleware.CORSMiddleware())
 
 	v1 := router.Group("/api/v1")
 	v1.GET("/health", health.HealthCheck)
