@@ -54,7 +54,8 @@ func (c *UserController) Login(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.SetCookie("token", response.Token, 60*60*24, "/", "", false, false)
+	ctx.SetCookie("token", response.Token, 60*60*24, "/", "", true, true)
+	ctx.SetSameSite(http.SameSiteNoneMode)
 
 	ctx.JSON(http.StatusOK, response)
 }
@@ -81,3 +82,4 @@ func (c *UserController) UpdateUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, user)
 }
+
