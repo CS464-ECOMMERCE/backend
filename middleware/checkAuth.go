@@ -3,6 +3,7 @@ package middleware
 import (
 	"backend/configs"
 	"backend/models"
+	"fmt"
 	"slices"
 
 	"github.com/gin-gonic/gin"
@@ -24,6 +25,8 @@ func CheckAuth(c *gin.Context) {
 		}
 		return []byte(configs.JWT_SECRET), nil
 	})
+
+	fmt.Println("============TOKEN==============", token)
 	if err != nil || !token.Valid {
 		c.JSON(401, gin.H{"error": "Unauthorized"})
 		c.Abort()
