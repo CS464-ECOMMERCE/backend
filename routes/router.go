@@ -55,6 +55,9 @@ func InitRoutes() {
 	// config.AllowAllOrigins = true
 	config.AllowCredentials = true
 	config.AllowOriginFunc = func(origin string) bool {
+		if strings.Contains(origin, "localhost") {
+			return true
+		}
 		// Allow your Vercel frontend domains
 		if strings.Contains(origin, "cs464-frontend") && strings.HasSuffix(origin, ".vercel.app") {
 			return true
@@ -65,6 +68,7 @@ func InitRoutes() {
 		}
 		return false
 	}
+	config.ExposeHeaders = []string{"Set-Cookie"}
 	router.Use(cors.New(config))
 
 	v1 := router.Group("/api/v1")
