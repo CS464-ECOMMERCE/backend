@@ -4,6 +4,7 @@ import (
 	"backend/configs"
 	"backend/controllers"
 	"backend/middleware"
+	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -52,11 +53,18 @@ func InitRoutes() {
 	config := cors.DefaultConfig()
 	config.AllowHeaders = append(config.AllowHeaders, "Authorization")
 	// config.AllowAllOrigins = true
-	config.AllowOrigins = []string{
-		"http://localhost:3000",
-		"https://*.stripe.com",
-	}
 	config.AllowCredentials = true
+	config.AllowOriginFunc = func(origin string) bool {
+		// Allow your Vercel frontend domains
+		if strings.Contains(origin, "cs464-frontend") && strings.HasSuffix(origin, ".vercel.app") {
+			return true
+		}
+		// Optional: Allow Stripe URLs (usually not needed)
+		if strings.HasSuffix(origin, ".stripe.com") {
+			return true
+		}
+		return false
+	}
 	router.Use(cors.New(config))
 
 	v1 := router.Group("/api/v1")
