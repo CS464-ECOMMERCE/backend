@@ -22,15 +22,19 @@ func NewOrderController() *OrderController {
 }
 
 func (o *OrderController) GetOrder(c *gin.Context) {
-	var req struct {
-		Id uint64 `json:"id"`
-	}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(400, gin.H{"error": "order id is required"})
 		return
 	}
 
-	order, err := services.NewOrderService().GetOrder(c, req.Id)
+	orderId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "invalid order id"})
+		return
+	}
+
+	order, err := services.NewOrderService().GetOrder(c, orderId)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -40,15 +44,13 @@ func (o *OrderController) GetOrder(c *gin.Context) {
 }
 
 func (o *OrderController) GetOrderByEmail(c *gin.Context) {
-	var req struct {
-		Email string `json:"email"`
-	}
-	if err := c.ShouldBindJSON(&req); err != nil {
+	email := c.Param("email")
+	if email == "" {
 		c.JSON(400, gin.H{"error": "email is required"})
 		return
 	}
 
-	user, err := services.NewUserService().GetUserByEmail(req.Email)
+	user, err := services.NewUserService().GetUserByEmail(email)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
