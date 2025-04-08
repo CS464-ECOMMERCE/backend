@@ -107,7 +107,6 @@ func InitRoutes() {
 	orderRoute.GET("/merchant", middleware.CheckAuth, order.GetOrdersByMerchant)
 	orderRoute.POST("/update", middleware.CheckAuth, order.UpdateOrderStatus)
 	orderRoute.POST("/cancel", middleware.CheckAuth, order.CancelOrder)
-	orderRoute.POST("/delete", middleware.CheckAuth, order.DeleteOrder)
 
 	// stripe routes
 	stripeRoute := v1.Group("/stripe")

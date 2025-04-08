@@ -119,23 +119,6 @@ func (o *OrderController) CancelOrder(c *gin.Context) {
 	c.JSON(200, order)
 }
 
-func (o *OrderController) DeleteOrder(c *gin.Context) {
-	var req struct {
-		Id uint64 `json:"id"`
-	}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := services.NewOrderService().DeleteOrder(c, req.Id); err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(200, gin.H{"status": "success"})
-}
-
 func (o *OrderController) HandleStripeWebhook(c *gin.Context) {
 	event := o.verifyEvent(c)
 
