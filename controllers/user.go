@@ -3,7 +3,6 @@ package controllers
 import (
 	"backend/models"
 	"backend/services"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -55,7 +54,6 @@ func (c *UserController) Login(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println("===========TOKEN==========", response.Token)
 	ctx.SetCookie("token", response.Token, 60*60*24, "/", "", false, false)
 
 	ctx.JSON(http.StatusOK, response)
@@ -83,4 +81,3 @@ func (c *UserController) UpdateUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, user)
 }
-
