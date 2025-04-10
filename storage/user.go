@@ -2,6 +2,7 @@ package storage
 
 import (
 	"backend/models"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -40,11 +41,11 @@ func (s *UserStorage) FindByEmail(email string) (*models.User, error) {
 	var user models.User
 	if err := s.read.Where("email = ?", email).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil
+			return nil, fmt.Errorf("user with email %s not found", email)
 		}
 		return nil, err
 	}
-	
+
 	return &user, nil
 }
 
