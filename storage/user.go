@@ -16,6 +16,7 @@ type UserInterface interface {
 	Create(user *models.User) error
 	CreateMerchant(merchant *models.Merchant) error
 	FindByEmail(email string) (*models.User, error)
+	FindByEmailOrCreate(email string) (*models.User, error)
 	FindByID(id int) (*models.User, error)
 	Update(user *models.User, updates map[string]interface{}) error
 	UpdateMerchant(userID int, updates map[string]interface{}) error
@@ -43,6 +44,15 @@ func (s *UserStorage) FindByEmail(email string) (*models.User, error) {
 		if err == gorm.ErrRecordNotFound {
 			return nil, fmt.Errorf("user with email %s not found", email)
 		}
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (s *UserStorage) FindByEmailOrCreate(email string) (*models.User, error) {
+	var user models.User
+	if err := s.write.Where(models.User{Email: email}).Attrs(models.User{Role: models.RoleClient}).FirstOrCreate(&user).Error; err != nil {
 		return nil, err
 	}
 
