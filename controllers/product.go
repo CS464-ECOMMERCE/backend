@@ -201,7 +201,9 @@ func (p *ProductController) CreateOrder(c *gin.Context) {
 	}
 
 	var req struct {
-		Email string `json:"email" binding:"required,email"`
+		Email   string `json:"email" binding:"required,email"`
+		Address string `json:"address" binding:"required"`
+		Country string `json:"country" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -217,8 +219,10 @@ func (p *ProductController) CreateOrder(c *gin.Context) {
 
 	placeOrderRequest := &pb.PlaceOrderRequest{
 		SessionId: sessionID.(string),
-		UserEmail: req.Email,
 		UserId:    uint64(user.ID),
+		UserEmail: req.Email,
+		Address:   req.Address,
+		Country:   req.Country,
 	}
 
 	sess, err := services.NewProductService().PlaceOrder(c, placeOrderRequest)
