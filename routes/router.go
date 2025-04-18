@@ -7,29 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	// swaggerFiles "github.com/swaggo/files"     // swagger embed files
-	// ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
 
-//	@title			Swagger Example API
-//	@version		1.0
-//	@description	This is a sample server celler server.
-//	@termsOfService	http://swagger.io/terms/
-
-//	@contact.name	API Support
-//	@contact.url	http://www.swagger.io/support
-//	@contact.email	support@swagger.io
-
-//	@license.name	Apache 2.0
-//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
-
-//	@host		localhost:8080
-//	@BasePath	/api/v1
-
-//	@securityDefinitions.basic	BasicAuth
-
-// @externalDocs.description	OpenAPI
-// @externalDocs.url			https://swagger.io/resources/open-api/
 func InitRoutes() {
 	health := controllers.NewHealthController()
 	product := controllers.NewProductController()
@@ -39,7 +18,7 @@ func InitRoutes() {
 	stripeCon := controllers.NewStripeController()
 	router := gin.Default()
 
-	// // recover from panics and respond with internal server error
+	// recover from panics and respond with internal server error
 	router.Use(gin.Recovery())
 
 	// add prometheus
@@ -48,25 +27,6 @@ func InitRoutes() {
 	router.Use(middleware.TrackMetrics())
 
 	// enabling cors
-	// config := cors.DefaultConfig()
-	// config.AllowHeaders = append(config.AllowHeaders, "Authorization")
-	// // config.AllowAllOrigins = true
-	// config.AllowCredentials = true
-	// config.AllowOriginFunc = func(origin string) bool {
-	// 	if strings.Contains(origin, "localhost") {
-	// 		return true
-	// 	}
-	// 	// Allow your Vercel frontend domains
-	// 	if strings.Contains(origin, "cs464-frontend") && strings.HasSuffix(origin, ".vercel.app") {
-	// 		return true
-	// 	}
-	// 	// Optional: Allow Stripe URLs (usually not needed)
-	// 	if strings.HasSuffix(origin, ".stripe.com") {
-	// 		return true
-	// 	}
-	// 	return false
-	// }
-	// config.ExposeHeaders = []string{"Set-Cookie"}
 	router.Use(middleware.CORSMiddleware())
 
 	v1 := router.Group("/api/v1")

@@ -1,7 +1,6 @@
 package configs
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 
@@ -12,11 +11,6 @@ import (
 var (
 	PORT            string
 	API_LISTEN_HOST string
-
-	// AMQP_PORT     string
-	// AMQP_HOSTNAME string
-	// AMQP_USERNAME string
-	// AMQP_PASSWORD string
 
 	POSTGRESQL_CONN_STRING_MASTER string
 	POSTGRESQL_CONN_STRING_SLAVE  string
@@ -46,12 +40,6 @@ func InitEnv() {
 	PORT = getEnv("API_PORT", "8080")
 	API_LISTEN_HOST = getEnv("API_LISTEN_HOST", "0.0.0.0")
 
-	// amqp
-	// AMQP_PORT = getEnv("AMQP_PORT", "5672")
-	// AMQP_HOSTNAME = getEnv("AMQP_HOSTNAME", "rabbitmq.default.svc.cluster.local")
-	// AMQP_USERNAME = getEnv("AMQP_USERNAME", "rabbit")
-	// AMQP_PASSWORD = getEnv("AMQP_PASSWORD", "rabbit")
-
 	// postgress
 	POSTGRESQL_CONN_STRING_MASTER = getEnv("POSTGRESQL_CONN_STRING_MASTER", "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai")
 	POSTGRESQL_CONN_STRING_SLAVE = getEnv("POSTGRESQL_CONN_STRING_SLAVE", "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai")
@@ -74,21 +62,6 @@ func InitEnv() {
 	// stripe
 	STRIPE_API_KEY = getEnv("STRIPE_API_KEY", "some-api-key")
 	stripe.Key = getEnv("STRIPE_SECRET_KEY", "some-secret-key")
-}
-
-func GetMongoURI() string {
-	err := godotenv.Load("/app/secrets/.env")
-	if err != nil {
-		panic("Error loading env file")
-	}
-	MONGO_USER := os.Getenv("MONGODB_USERNAME")
-	MONGO_PASS := os.Getenv("MONGODB_PASSWORD")
-	MONGO_HOSTNAME := os.Getenv("MONGODB_HOSTNAME")
-	MONGO_URI := os.Getenv("MONGO_URI")
-	if MONGO_URI == "" {
-		MONGO_URI = fmt.Sprintf("mongodb://%s:%s@%s:%s", MONGO_USER, MONGO_PASS, MONGO_HOSTNAME, "27017")
-	}
-	return MONGO_URI
 }
 
 // get env with default if the value is empty
