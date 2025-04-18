@@ -2,16 +2,13 @@ package main
 
 import (
 	"backend/configs"
-	_ "backend/docs"
 	"backend/grpc"
 	"backend/routes"
 	"backend/storage"
-	// "backend/mq"
 )
 
 func main() {
-	configs.InitEnv() // init env
-	// mq.Init()           // init rabbitmq connection
+	configs.InitEnv()            // init env
 	storage.GetStorageInstance() // init db
 	grpc.Init()
 	routes.InitRoutes() // init controller routes
